@@ -1,7 +1,8 @@
 # Spring Boot Cheat Sheet
 
-_[geeksforgeeks.org](https://www.geeksforgeeks.org/advance-java/spring-boot/)_
+_[geeksforgeeks.org - resourse for this markdown file](https://www.geeksforgeeks.org/advance-java/spring-boot/)_
 
+_[medium.com - interview questions](https://medium.com/@lakshyachampion/spring-boot-essentials-the-interview-cheat-sheet-e81ee59ce646)_
 ## Table of Contents
 
 - [Spring Boot Architecture](#spring-boot-architecture)
@@ -277,7 +278,8 @@ While mostly replaced by annotations, these modes define the "logic" Spring uses
 
 In Spring Boot and modern Spring (2026), we use the `@Autowired` annotation. It primarily works **byType**.
 
-* **Field Injection:** (Not recommended)
+### **Field Injection:** 
+Not recommended
 ```java
 @Autowired
 private State state;
@@ -285,7 +287,7 @@ private State state;
 ```
 
 
-* **Setter Injection:**
+### **Setter Injection:**
 ```java
 @Autowired
 public void setState(State state) { this.state = state; }
@@ -293,7 +295,7 @@ public void setState(State state) { this.state = state; }
 ```
 
 
-* **Constructor Injection:** (**Best Practice**)
+### **Constructor Injection:** (**Best Practice**)
 ```java
 private final State state;
 public City(State state) { this.state = state; }
