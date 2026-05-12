@@ -744,46 +744,7 @@ Explicitly defining beans using a Java class.
 
 ---
 
-## 1. How It Works (The Workflow)
-![Dispatcher Servlet](https://media.geeksforgeeks.org/wp-content/uploads/20260228113317618539/spring_mvc_architecture.webp)
-Instead of having multiple servlets, everything goes through the Dispatcher Servlet, which coordinates the work:
 
-1. **Request Arrival:** The client sends an HTTP request (e.g., `GET /api/details`).
-2. **Handler Mapping:** The Dispatcher Servlet asks: *"Who handles this URL?"* It finds the matching Controller method (via `@GetMapping`, etc.).
-3. **Controller Execution:** The Controller processes the business logic and returns data (Model) and a View name (or just the data for REST APIs).
-4. **View Resolver:** (For Web pages) It finds the physical file (like a Thymeleaf template or JSP).
-5. **Response:** The final result is sent back to the client.
-
----
-
-### 2. Spring MVC vs. Spring Boot Setup
-
-| Feature | **Traditional Spring MVC** | **Modern Spring Boot** |
-| --- | --- | --- |
-| **Configuration** | Manual setup in `web.xml`. | **Auto-configured.** Just add `spring-boot-starter-web`. |
-| **Server** | Requires external Tomcat installation. | **Embedded Tomcat** (starts with the app). |
-| **Registration** | Complex XML tags. | Automatic, or via a simple `@Bean` if customization is needed. |
-
----
-
-### 3. Key Annotations to Remember
-
-When the Dispatcher Servlet routes requests, it looks for these annotations in your classes:
-
-* **`@RestController`**: Tells the Dispatcher Servlet that this class handles web requests and returns data directly (JSON/XML) instead of a HTML view.
-* **`@RequestMapping("/path")`**: The base URL for the controller.
-* **`@GetMapping`, `@PostMapping`, etc.**: Specific HTTP methods.
-* **`@RequestBody`**: Tells the Servlet to convert the incoming JSON into a Java object.
-* **`@PathVariable`**: Extracts values directly from the URL (e.g., `/api/details/{id}`).
-
----
-
-### 4. Why use a Front Controller?
-
-* **Centralized Control:** You can handle security, logging, and internationalization in one place before it reaches the controllers.
-* **Looser Coupling:** Controllers don't need to know about the Servlet API or how the request was routed; they just focus on business logic.
-
----
 
 # Bean Life Cycle
 ![Bean Life Cycle](https://media.geeksforgeeks.org/wp-content/uploads/20260227122521018332/container_started.webp)
@@ -1213,3 +1174,4 @@ developmentOnly("org.springframework.boot:spring-boot-devtools")
 ```
 
 _Note: Each release of Spring Boot is associated with a base version of the Spring Framework, so it is highly recommended to not specify its version on your own._
+
