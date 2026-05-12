@@ -15,25 +15,24 @@ _[medium.com - interview questions](https://medium.com/@lakshyachampion/spring-b
   - [Architecture Layers](#architecture-layers)
   - [Flow Architecture](#spring-boot-flow-architecture)
 
-### Core Concepts
+### Core Components
 - [Annotations](#annotations)
-- [Spring Injection](#spring-injection)
-- [BeanFactory vs ApplicationContext](#beanfactory-vs-applicationcontext-in-spring)
+- [Spring Boot Auto-Configuration](#spring-boot-auto-configuration)
+- [Dispatcher Servlet in Spring](#what-is-dispatcher-servlet-in-spring)
 
-### Dependency Injection
+### Dependency Injection & Beans
+- [Spring Injection](#spring-injection)
 - [Spring Autowiring](#spring-autowiring)
 - [`@Autowired` and `@Qualifier`](#autowired-and-qualifier)
-
-### Bean Management
+- [BeanFactory vs ApplicationContext](#beanfactory-vs-applicationcontext-in-spring)
+- [3 Ways to Create Spring Beans](#3-ways-to-create-spring-beans)
 - [Bean Life Cycle](#bean-life-cycle)
 - [Singleton and Prototype Scopes](#singleton-and-prototype-bean-scopes)
 - [Custom Bean Scope](#custom-bean-scope)
-- [3 Ways to Create Spring Beans](#3-ways-to-create-spring-beans)
 
-### Advanced Topics
-- [Dispatcher Servlet in Spring](#what-is-dispatcher-servlet-in-spring)
+### Build & Configuration
 - [Introduction to Build Tools](#introduction-to-build-tools)
-- [Spring Boot Auto-Configuration](#spring-boot-auto-configuration)
+- [Dependency Management](#dependency-management)
  
 # Spring
 Spring is a comprehensive Java framework that provides support for building robust and scalable enterprise applications. It focuses on dependency injection, aspect-oriented programming, and modular architecture.
@@ -212,7 +211,7 @@ public class UserService {
 
 ### 3. `@Repository`
 
-Used in the DAO layer to interact with the database. Automatically translates database-related exceptions into Spring exceptions.
+Used in the DAO(Data Access Object) layer to interact with the database. Automatically translates database-related exceptions into Spring exceptions.
 
 ```java
 @Repository
@@ -586,15 +585,6 @@ public MyService(@Qualifier("mongoRepo") MyRepository repository) {
 * **`@Primary`**: Use this on a bean class to say: *"If there are multiple beans, use this one by default unless a `@Qualifier` says otherwise."*
 * **`@Qualifier`**: Always takes precedence over `@Primary`. It is more specific.
 
-# What is Dispatcher Servlet in Spring?
-The **Dispatcher Servlet** is the "Front Controller" of a Spring Web application. It acts as the single entry point for every HTTP request coming into your app.
-
-DispatcherServlet in Spring is the central component of the Spring MVC framework that acts as the front controller. It receives all incoming HTTP requests, forwards them to the appropriate controllers, and manages the response generation process including handler mapping and view resolution.
-
-- It handles incoming requests and routes them to the appropriate controllers
-- It tells controllers how to handle requests and return responses.
-- After the controllers process the request, it picks the correct view to show the result (like a webpage).
-
 # Bean Life Cycle
 ![Bean Life Cycle](https://media.geeksforgeeks.org/wp-content/uploads/20260227122521018332/container_started.webp)
 
@@ -783,6 +773,15 @@ When the Dispatcher Servlet routes requests, it looks for these annotations in y
 
 ---
 
+# What is Dispatcher Servlet in Spring?
+The **Dispatcher Servlet** is the "Front Controller" of a Spring Web application. It acts as the single entry point for every HTTP request coming into your app.
+
+DispatcherServlet in Spring is the central component of the Spring MVC framework that acts as the front controller. It receives all incoming HTTP requests, forwards them to the appropriate controllers, and manages the response generation process including handler mapping and view resolution.
+
+- It handles incoming requests and routes them to the appropriate controllers
+- It tells controllers how to handle requests and return responses.
+- After the controllers process the request, it picks the correct view to show the result (like a webpage).
+
 # Introduction to Build Tools
 ## Anatomy of a Build: The Dependency Graph
 The anatomy of a build is based on a dependency graph, usually a **Directed Acyclic Graph (DAG)**, which maps how modules depend on each other. The build tool uses this graph to determine the correct order of operations, ensuring that dependencies are built before the modules that rely on them. This approach optimizes build time and avoids unnecessary work.
@@ -917,3 +916,302 @@ You do not need to manually configure:
 - Web server
 - Servlet configuration
 - MVC configuration
+
+# Dependency Management
+## Importance of Dependency Management
+
+- Centralized Dependency Management: All dependencies are managed in one place, typically in the pom.xml (for Maven) or build.gradle (for Gradle) file.
+- Automatic Version Management: When we change the Spring Boot version, the versions of all related dependencies are automatically updated.
+- Conflict Prevention: It helps prevent version conflicts between different libraries, especially in multi-module projects.
+
+Note: Dependency Management is a way of managing all the required dependencies in one place and efficiently making use of them.
+
+## Life Cycle of Dependency Management
+
+The below diagram demonstrates the type of Dependency Management
+
+![Dependency-Management life-cycle](https://media.geeksforgeeks.org/wp-content/uploads/20250312160622555937/Dependency-Management.webp)
+
+## Working of Dependency Management in Spring-Boot
+
+- Dependency is nothing but a 'Library' that provides specific functionality that we can use in our application.
+- In Spring-Boot, Dependency Management and Auto-Configuration work simultaneously.
+- It is the auto-configuration that makes managing dependencies supremely easy for us.
+- We have to add the dependencies in the pom.xml/build.gradle file.
+- These added dependencies will then get downloaded from Maven Central.
+- The downloaded dependencies will get stored into the '.m2' folder in the local file system.
+- The Spring-Boot application can access these dependencies from  '.m2' and its sub-directories.
+
+![MVNRepository](https://media.geeksforgeeks.org/wp-content/uploads/20250312145914400660/MVNRepository.png)
+
+## Project Build Systems
+
+Spring Boot supports two main build system Maven and Gradle.
+
+- Maven: Dependencies are managed in the pom.xml file.
+- Gradle: Dependencies are managed in the build.gradle file.
+
+Maven and Gradle use a different syntax for managing dependencies.
+Also, we don't need to mention the version of the dependencies, as Spring-Boot configures them automatically. Though we can mention the version or override as well.
+
+## Key features of Maven build
+
+- It uses the default Java compiler.
+- It has UTF-8 source encoding
+- A useful feature of not mentioning the version information of dependencies is inherited from POM ( spring-boot-dependencies ).
+- Resource filtering and plugin configurations.
+- Resource filtering is also for 'application.properties' and 'application.yml'.
+
+## Spring-Boot Starters
+
+Spring Boot Starters are a set of convenient dependency descriptors provided by Spring Boot that simplify the setup of your application by grouping commonly used libraries and configurations into a single, reusable module.
+
+_Example: 'spring-boot-starter-jdbc'_
+
+## Types of Starters
+
+- Application Starters: For building specific types of applications (e.g., spring-boot-starter-web).
+- Technical Starters: For technical features like logging or security (e.g., spring-boot-starter-security).
+- Production-ready Starters: For monitoring and managing production applications (e.g., spring-boot-starter-actuator).
+
+All the required dependencies of Spring-Boot are embedded in the 'dependencies' tag/block.
+
+Maven -> pom.xml
+
+```xml
+<dependencies>
+     <dependency>
+          <groupId> ... </groupId>
+          <artifactId> ... </artifactId>
+          <version> ... </version>
+     </dependency>
+</dependencies>
+```
+
+## Adding Dependencies in Spring Boot
+
+### 1. Using Maven (pom.xml)
+
+I
+If we know the dependency, we can directly place them in the pom.xml file. For example to add the Thymeleaf template engine in your project build, one can add the following dependency in the `<dependencies></dependencies>` tag.
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+```
+
+pom.xml:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>sia</groupId>
+    <artifactId>GFG</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>GFG</name>
+    <description>GFG Application</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Starter Web for building web applications -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Starter Thymeleaf for rendering views -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- Lombok for reducing boilerplate code -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Boot Starter Test for unit testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring Boot DevTools for enhanced development experience -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Spring Boot Maven Plugin for packaging the application -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- Exclude Lombok from the packaged application -->
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+#### Understanding/Configuring Dependencies
+Starter Parent: To take advantage of auto-configured 'sensible' defaults, we should add Starter Parent in the project.
+```xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>___</version>
+</parent>
+```
+With default configuration like above, we can override respective dependencies by overriding a 'property'.
+
+```xml
+<properties>
+    <slf4j.version>___</slf4j.version>
+</properties>
+```
+
+This will make sure that the mentioned version of a SLf4j library will be used.
+We can also manage auto-configured 'Starter Parent' and create a custom POM without the need to specify the first one with the help of artifact 'scope=import' of 'spring-boot-dependencies'.
+
+```xml
+ <dependencyManagement>
+     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>___</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+After this, we can normally add the dependencies like the one mentioned above. But, to override the individual dependency, we need to add a respective entry before the 'spring-boot-dependencies' entry.
+
+```xml
+<dependencyManagement>
+    <dependencies>
+
+        <!-- Override SLF4J provided by Spring Boot -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>___</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>___</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+
+    </dependencies>
+</dependencyManagement>
+```
+
+But, we have to manually configure the plugin management by adding 'spring-boot-maven-plugin' explicitly. Managing the Maven plug-in is very essential as it packs the Spring-Boot application into an executable jar.
+
+Maven -> pom.xml
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Java Version: We can also change the java version in the following:
+
+```xml
+<properties>
+    <java.version>___</java.version>
+</properties>
+```
+
+Developer Tools: A set of specific tools to make the application development process much easier. It is in the 'spring-boot-devtools' module.
+
+Maven -> pom.xml
+
+```xml
+<dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-devtools</artifactId>
+     <optional>true</optional>
+</dependency>
+```
+
+### 2. Using Gradle
+
+In the case of a 'Starter Parent' like in Maven, here there is no 'Super Parent' to take advantage of some auto configurations. To add dependencies in Gradle, add them in the 'dependencies{ }' section. For providing executable jar, we can add the following in the dependencies section
+
+'spring-boot-gradle-plugin'
+
+build.gradle:
+
+```gradle
+buildscript {
+    repositories {
+        mavenCentral() // Use Maven Central instead of jcenter (jcenter is deprecated)
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:3.4.4") 
+    }
+}
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot' 
+repositories {
+    mavenCentral() // Use Maven Central for dependencies
+}
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web") 
+    testImplementation("org.springframework.boot:spring-boot-starter-test") 
+}
+```
+
+For adding the 'Developer tools', add the following in the 'dependencies' block
+
+Gradle -> build.gradle
+
+```gradle
+developmentOnly("org.springframework.boot:spring-boot-devtools")
+```
+
+_Note: Each release of Spring Boot is associated with a base version of the Spring Framework, so it is highly recommended to not specify its version on your own._
