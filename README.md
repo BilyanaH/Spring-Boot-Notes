@@ -33,6 +33,9 @@ _[medium.com - interview questions](https://medium.com/@lakshyachampion/spring-b
 ### Build & Configuration
 - [Introduction to Build Tools](#introduction-to-build-tools)
 - [Dependency Management](#dependency-management)
+- [Application Properties](#application-properties)
+- [Actuator](#actuator)
+- [DevTools](#devtools)
  
 # Spring
 Spring is a comprehensive Java framework that provides support for building robust and scalable enterprise applications. It focuses on dependency injection, aspect-oriented programming, and modular architecture.
@@ -744,7 +747,46 @@ Explicitly defining beans using a Java class.
 
 ---
 
+## 1. How It Works (The Workflow)
+![Dispatcher Servlet](https://media.geeksforgeeks.org/wp-content/uploads/20260228113317618539/spring_mvc_architecture.webp)
+Instead of having multiple servlets, everything goes through the Dispatcher Servlet, which coordinates the work:
 
+1. **Request Arrival:** The client sends an HTTP request (e.g., `GET /api/details`).
+2. **Handler Mapping:** The Dispatcher Servlet asks: *"Who handles this URL?"* It finds the matching Controller method (via `@GetMapping`, etc.).
+3. **Controller Execution:** The Controller processes the business logic and returns data (Model) and a View name (or just the data for REST APIs).
+4. **View Resolver:** (For Web pages) It finds the physical file (like a Thymeleaf template or JSP).
+5. **Response:** The final result is sent back to the client.
+
+---
+
+### 2. Spring MVC vs. Spring Boot Setup
+
+| Feature | **Traditional Spring MVC** | **Modern Spring Boot** |
+| --- | --- | --- |
+| **Configuration** | Manual setup in `web.xml`. | **Auto-configured.** Just add `spring-boot-starter-web`. |
+| **Server** | Requires external Tomcat installation. | **Embedded Tomcat** (starts with the app). |
+| **Registration** | Complex XML tags. | Automatic, or via a simple `@Bean` if customization is needed. |
+
+---
+
+### 3. Key Annotations to Remember
+
+When the Dispatcher Servlet routes requests, it looks for these annotations in your classes:
+
+* **`@RestController`**: Tells the Dispatcher Servlet that this class handles web requests and returns data directly (JSON/XML) instead of a HTML view.
+* **`@RequestMapping("/path")`**: The base URL for the controller.
+* **`@GetMapping`, `@PostMapping`, etc.**: Specific HTTP methods.
+* **`@RequestBody`**: Tells the Servlet to convert the incoming JSON into a Java object.
+* **`@PathVariable`**: Extracts values directly from the URL (e.g., `/api/details/{id}`).
+
+---
+
+### 4. Why use a Front Controller?
+
+* **Centralized Control:** You can handle security, logging, and internationalization in one place before it reaches the controllers.
+* **Looser Coupling:** Controllers don't need to know about the Servlet API or how the request was routed; they just focus on business logic.
+
+---
 
 # Bean Life Cycle
 ![Bean Life Cycle](https://media.geeksforgeeks.org/wp-content/uploads/20260227122521018332/container_started.webp)
@@ -1174,4 +1216,250 @@ developmentOnly("org.springframework.boot:spring-boot-devtools")
 ```
 
 _Note: Each release of Spring Boot is associated with a base version of the Spring Framework, so it is highly recommended to not specify its version on your own._
+
+# Application Properties
+
+In Spring Boot applications, configuration is important for customizing application behavior without modifying the source code. Spring Boot allows developers to manage settings using configuration files like application.properties or application.yml.
+
+- These files help define settings such as server port, database configuration, and logging levels.
+- They make the application easier to maintain and allow different configurations for different environments.
+
+## Why Use application.properties?
+- Centralized configuration management.
+- Easy to override default Spring Boot settings.
+- Provides flexibility for different environments (dev, test, prod).
+- Reduces hardcoding in source code.
+
+## Commonly Used Properties
+### 1. Server Configuration
+We can change the default port (8080) of a Spring Boot application by setting the property server.port in the application.properties file. 
+
+``` properties
+server.port=8989
+```
+
+### 2. Defining the Application Name
+We can set a custom name for your Spring Boot application using the spring.application.name property in the application.properties.
+
+``` properties
+string.application.name=TheatreManager
+```
+### 3. Database Configuration
+To connect your Spring Boot application with a database, specify the required properties such as spring.datasource.url, spring.datasource.username and spring.datasource.password in the application.properties file. These properties vary depending on the database (e.g., MySQL, PostgreSQL, Oracle).
+
+**MySQL Configuration (.properties)**
+``` properties
+spring.datasource.url=jdbc:mysql://localhost:3306/theatre_db
+spring.datasource.username=root
+spring.datasource.password=secret
+spring.jpa.hibernate.ddl-auto=update
+```
+
+### 4. Connecting with an Eureka Server
+Eureka Server acts as a service registry in microservices architecture. Each microservice registers itself to Eureka, which maintains service discovery details.
+
+## Using application.yml Instead of application.properties
+The application.properties file is not very readable when dealing with complex configurations. Most developers prefer using application.yml (YAML format) instead. YAML is a superset of JSON and provides a more structured and readable way to define hierarchical configuration data. Let's convert some of the previous examples into YAML format.
+
+``` yaml
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+```
+YAML configuration files allow developers to organize settings in a hierarchical and readable format.
+
+## Why Use application.yml?
+- Provides a structured and hierarchical configuration format.
+- More readable for complex configurations.
+- Reduces repetition compared to application.properties.
+- Widely used in microservices and cloud-based Spring Boot applications.
+
+## application.yml vs application.properties
+Here is the cleaned and formatted comparison table for your cheat sheet, summarizing the key differences between the two configuration formats.
+
+---
+
+### **Comparison: `.properties` vs. `.yml`**
+
+| Feature | **application.properties** | **application.yml** |
+| --- | --- | --- |
+| **Format** | Key-value pairs | Hierarchical structure |
+| **Readability** | Less readable for large/complex configs | More readable |
+| **Structure** | Flat structure | Nested/Tree-like structure |
+| **Usage** | Best for simple, straightforward settings | Best for complex, multi-level configurations |
+
+# Actuator
+Monitoring and managing applications in production is essential to ensure stability and performance. Spring Boot Actuator provides built-in features to track application health, metrics, and internal state through easy-to-use endpoints.
+
+- Exposes production-ready endpoints (like /actuator/health) to check application status
+- Supports monitoring via HTTP endpoints and JMX integration
+- Helps track metrics, performance, and system behavior for better management
+
+![Spring Boot Starter Actuator](https://media.geeksforgeeks.org/wp-content/uploads/20250318160722633679/Spring-Boot-Starter-Actuator_.webp)
+
+## Advantages of Actuator Application
+- It increases customer satisfaction.
+- It reduces downtime.
+- It boosts productivity.
+- It improves Cybersecurity Management.
+- It increases the conversion rate.
+
+## Setup and Configuration
+### 1. Add Dependency
+For Maven (pom.xml):
+``` xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+</dependencies>
+```
+For Gradle (build.gradle):
+``` gradle
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+```
+
+### **2 Exposing Endpoints**
+
+By default, only the `/health` endpoint is visible for security reasons. You can manage visibility in your `application.properties`:
+
+***Enable ** :`management.endpoint.metrics.enabled=true`  
+An endpoint must be "enabled" to exist at all. Most are enabled by default, but you can turn specific ones off for performance or security.
+* **Expose specific ones**: `management.endpoints.web.exposure.include=*`
+Even if an endpoint is "enabled", it won't be visible over the web (HTTP) unless you "expose" it. By default, ONLY /health is exposed.
+* **Expose specific ones**: `management.endpoints.web.exposure.include=health,info,metrics`  
+
+* **Exclude endpoints**: `management.endpoints.web.exposure.exclude=env`
+* **Change base path**: 
+`management.endpoints.web.base-path=/monitoring` (changes `/actuator` to `/monitoring`)  
+By default, all monitoring happens at http://localhost:8080/actuator. If you want to rename this (perhaps to hide it from bots or fit your company naming standards), you change the base-path.
+
+---
+
+### **3. Commonly Used Endpoints**
+
+Actuator provides over 20 built-in endpoints. Here are the most useful:
+
+| Endpoint | Description |
+| --- | --- |
+| **`/health`** | Shows basic application health status (UP/DOWN). |
+| **`/metrics`** | Displays metrics like memory usage, garbage collection, and request counts. |
+| **`/beans`** | Lists every Spring Bean registered in the Application Context. |
+| **`/mappings`** | Shows all `@RequestMapping` paths and which controllers handle them. |
+| **`/loggers`** | Allows you to view and even **change** logging levels at runtime. |
+| **`/threaddump`** | Performs a thread dump to diagnose "stuck" or slow processes. |
+| **`/caches`** | Exposes and allows management of available caches. |
+| **`/conditions`** | Shows conditions evaluated on configuration and auto-configuration classes. |
+| **`/httptrace`** | Displays HTTP trace information, typically for the last 100 requests. |
+| **`/sessions`** | Allows retrieval and deletion of user sessions (requires Spring Session). |
+
+
+### **4.Testing & Accessing Actuator APIs**
+The primary entry point is the `/actuator` URL.
+
+* **Default Access**: Visit `http://localhost:8080/actuator`.
+* **Custom Path**: If you changed the base path in `application.properties` (e.g., `management.endpoints.web.base-path=/details`), use `http://localhost:8080/details`.
+* **Function**: This provides a JSON response containing links to all other enabled and exposed endpoints.
+
+---
+
+The `health` ID is one of the few endpoints activated and exposed by default because it is essential for monitoring.
+
+* **How to Access**: Navigate directly to `http://localhost:8080/actuator/health`.
+* **Interpreting the Result**:
+    * **Status: "UP"**: This indicates the application is healthy and all checked components (like the database) are functioning correctly.
+    * **Status: "DOWN"**: This indicates a failure in one or more critical components.
+
+# DevTools
+Spring Boot DevTools is a module provided by Spring Boot to enhance the developer experience during application development. It helps improve productivity by reducing manual effort and speeding up the development cycle.
+
+- Automatic Restart: Restarts the application automatically when code changes are detected
+- Live Reload: Refreshes the browser automatically after changes
+- Property Defaults: Applies sensible development-time configurations automatically
+- Global Settings: Allows configuration across multiple projects
+- Remote Debug Tunneling: Enables debugging of applications running in remote environments
+![DevTools](https://media.geeksforgeeks.org/wp-content/uploads/20220219002901/devtools.jpg)
+
+
+
+## Configuration & Installation
+
+#### **Add Dependency**
+
+For **Maven** (`pom.xml`):
+
+```xml
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-devtools</artifactId>
+   <scope>runtime</scope>
+</dependency>
+
+```
+
+For **Gradle** (`build.gradle`):
+
+```gradle
+dependencies {
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+}
+
+```
+
+#### **Common `application.properties` Settings**
+
+* **Toggle DevTools**: `spring.devtools.restart.enabled=true/false`.
+* **Exclude Resources**: `spring.devtools.restart.exclude=resources/,static/` (Prevents restart for these files).
+* **Toggle LiveReload**: `spring.devtools.livereload.enabled=true/false`.
+
+---
+
+### How Automatic Restart Works
+
+Unlike a full cold start, DevTools uses a **two-class loader** system to make restarts nearly instant:
+
+* **Base Classloader**: Contains dependencies/libraries (like Spring JARs) that rarely change.
+* **Restart Classloader**: Contains your application code (the files you are actively editing).
+* **The Workflow**: When you change a Java file, only the **Restart Classloader** is reloaded. The JVM and base libraries stay loaded, which drastically reduces restart time.
+
+> **Note**: Changes to project dependencies (e.g., adding a new library to `pom.xml`) require a **manual** restart because the Base Classloader is not automatically reloaded.
+
+###  Productivity Tools
+
+#### **Template Cache Disabling**
+Normally, engines like **Thymeleaf**, **FreeMarker**, and **Groovy** cache templates to boost speed. In development, this is a nuisance because you can't see UI changes without a restart.
+
+- Template caching is automatically disabled during development
+- Changes in templates are reflected immediately after browser refresh
+- Eliminates the need to restart the application for UI updates
+
+#### **LiveReload Server**
+
+DevTools includes an embedded **LiveReload server**.
+
+* **Browser Sync**: If you use a LiveReload browser plugin (available for Chrome, Firefox, and Safari, not for Internet Explorer/Edge)), the browser will **automatically refresh** as soon as DevTools detects a change in your CSS, JS, or templates.
+
+
+#### **H2 Database Console**
+
+If an H2 database dependency is present, DevTools enables a web console.
+
+* **URL**: `http://localhost:8080/h2-console`.
+* **Purpose**: View and manage in-memory data handled by your application during development.
+
+## DevTools Cheat Sheet
+
+| Feature | Key Setting / URL | Impact on Development |
+| --- | --- | --- |
+| **Auto-Restart** | `spring.devtools.restart.enabled=true` | Reloads only your code (Restart Classloader) on save. |
+| **Ignore Files** | `spring.devtools.restart.exclude=static/**` | Prevents server restarts for simple static asset changes. |
+| **LiveReload** | `spring.devtools.livereload.enabled=true` | Triggers automatic browser refresh via embedded server. |
+| **Template Caching** | `spring.thymeleaf.cache=false` (auto) | UI changes show up immediately without a restart. |
+| **H2 Console** | `http://localhost:8080/h2-console` | Quick web-access to your in-memory database. |
 
