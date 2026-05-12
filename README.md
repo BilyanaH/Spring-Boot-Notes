@@ -12,7 +12,7 @@ _[medium.com - interview questions](https://medium.com/@lakshyachampion/spring-b
 
 ### Architecture & Configuration
 - [Spring Boot Architecture](#spring-boot-architecture)
-  - [Architecture Layers](#spring-boot-architecture-layers)
+  - [Architecture Layers](#architecture-layers)
   - [Flow Architecture](#spring-boot-flow-architecture)
 
 ### Core Concepts
@@ -468,6 +468,7 @@ In above Diagram:
 - Internationalization (i18n)
 - Automatic post-processor registration
 
+
 # Spring Autowiring 
 
 **Autowiring** allows the Spring container to resolve and inject collaborating beans into your bean automatically, significantly reducing the need for manual configuration.
@@ -593,8 +594,6 @@ DispatcherServlet in Spring is the central component of the Spring MVC framework
 - It handles incoming requests and routes them to the appropriate controllers
 - It tells controllers how to handle requests and return responses.
 - After the controllers process the request, it picks the correct view to show the result (like a webpage).
-
-
 
 # Bean Life Cycle
 ![Bean Life Cycle](https://media.geeksforgeeks.org/wp-content/uploads/20260227122521018332/container_started.webp)
